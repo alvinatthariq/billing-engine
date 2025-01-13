@@ -40,35 +40,37 @@ func TestMakePayment(t *testing.T) {
 			name:        "Single payment success",
 			amount:      110000, // Weekly payment amount
 			paymentDate: time.Date(2025, 1, 8, 0, 0, 0, 0, time.UTC),
-			wantErr:     false,
+			wantErr:     true,
+			errMsg:      "payment amount 110000 does not match number of pending payments (2 weeks pending)",
 		},
 		{
 			name:        "Multiple weeks payment success",
 			amount:      220000, // Two weeks payment
 			paymentDate: time.Date(2025, 1, 15, 0, 0, 0, 0, time.UTC),
-			wantErr:     false,
+			wantErr:     true,
+			errMsg:      "payment amount 220000 does not match number of pending payments (3 weeks pending)",
 		},
-		// {
-		// 	name:        "Partial payment error",
-		// 	amount:      50000,
-		// 	paymentDate: time.Date(2025, 1, 8, 0, 0, 0, 0, time.UTC),
-		// 	wantErr:     true,
-		// 	errMsg:      "payment amount must be a multiple of the weekly payment amount",
-		// },
-		// {
-		// 	name:        "Payment less than pending weeks",
-		// 	amount:      110000, // One week when two are pending
-		// 	paymentDate: time.Date(2025, 1, 15, 0, 0, 0, 0, time.UTC),
-		// 	wantErr:     true,
-		// 	errMsg:      "payment amount 110000 does not match number of pending payments (2 weeks pending)",
-		// },
-		// {
-		// 	name:        "Invalid payment date",
-		// 	amount:      110000,
-		// 	paymentDate: time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
-		// 	wantErr:     true,
-		// 	errMsg:      "invalid payment date",
-		// },
+		{
+			name:        "Partial payment error",
+			amount:      50000,
+			paymentDate: time.Date(2025, 1, 8, 0, 0, 0, 0, time.UTC),
+			wantErr:     true,
+			errMsg:      "payment amount must be a multiple of the weekly payment amount",
+		},
+		{
+			name:        "Payment less than pending weeks",
+			amount:      110000, // One week when three are pending
+			paymentDate: time.Date(2025, 1, 15, 0, 0, 0, 0, time.UTC),
+			wantErr:     true,
+			errMsg:      "payment amount 110000 does not match number of pending payments (3 weeks pending)",
+		},
+		{
+			name:        "Invalid payment date",
+			amount:      110000,
+			paymentDate: time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC),
+			wantErr:     true,
+			errMsg:      "invalid payment date",
+		},
 	}
 
 	for _, tt := range tests {
@@ -128,7 +130,7 @@ func TestIsDelinquent(t *testing.T) {
 	}
 
 	// Make payment for all pending weeks
-	err := loan.MakePayment(loan.WeeklyPayment*3, currentTime)
+	err := loan.MakePayment(loan.WeeklyPayment*4, currentTime)
 	if err != nil {
 		t.Errorf("Failed to make payment: %v", err)
 	}

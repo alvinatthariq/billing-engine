@@ -98,8 +98,12 @@ func (l *Loan) IsDelinquent(currentTime time.Time) bool {
 
 // MakePayment processes a payment for the loan
 func (l *Loan) MakePayment(amount float64, paymentDate time.Time) error {
+	if paymentDate.Before(l.StartDate) {
+		return errors.New("invalid payment date")
+	}
+
 	currentWeek := int(paymentDate.Sub(l.StartDate).Hours() / (24 * 7))
-	if currentWeek < 0 || currentWeek >= len(l.Payments) {
+	if currentWeek >= len(l.Payments) {
 		return errors.New("invalid payment date")
 	}
 
