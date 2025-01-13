@@ -51,13 +51,6 @@ func TestMakePayment(t *testing.T) {
 			errMsg:      "payment amount 220000 does not match number of pending payments (3 weeks pending)",
 		},
 		{
-			name:        "Partial payment error",
-			amount:      50000,
-			paymentDate: time.Date(2025, 1, 8, 0, 0, 0, 0, time.UTC),
-			wantErr:     true,
-			errMsg:      "payment amount must be a multiple of the weekly payment amount",
-		},
-		{
 			name:        "Payment less than pending weeks",
 			amount:      110000, // One week when three are pending
 			paymentDate: time.Date(2025, 1, 15, 0, 0, 0, 0, time.UTC),

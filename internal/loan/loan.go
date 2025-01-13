@@ -3,7 +3,6 @@ package loan
 import (
 	"errors"
 	"fmt"
-	"math"
 	"time"
 )
 
@@ -117,11 +116,6 @@ func (l *Loan) MakePayment(amount float64, paymentDate time.Time) error {
 
 	if len(unpaidWeeks) == 0 {
 		return errors.New("no pending payments found")
-	}
-
-	// Check if payment amount matches exactly one or more weekly payments
-	if math.Mod(amount, l.WeeklyPayment) != 0 {
-		return errors.New("payment amount must be a multiple of the weekly payment amount")
 	}
 
 	numPayments := int(amount / l.WeeklyPayment)

@@ -127,6 +127,7 @@ func (h *LoanHandler) MakePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	response := map[string]string{
 		"status": "Payment processed successfully",
